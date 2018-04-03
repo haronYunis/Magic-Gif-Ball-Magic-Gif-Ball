@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Orbitron" rel="stylesheet">
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/modules.css">
+
+  <title>Magic Gif Ball</title>
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Magic Gif Ball" />
+  <meta property="og:type" content="website" />
+  <meta name="description" content="A fun gif-generator that answers your burning questions!!" />
+  <meta property=”og:description” content="A fun gif-generator that answers your burning questions!!" />
+  <meta property="og:image" content="https://magic-gif-ball.herokuapp.com/styles/img_assets/gif-ball-2.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:url" content="https://magic-gif-ball.herokuapp.com" />
+
+  <!-- Handlebars template for history view -->
+  <script type="text/x-handlebars-template" id="gif-history-template">
+    <div class="history-container">
+      <div class="history-absolute-container">
+        <img src="{{gif}}" class="history-image">
+        <h3>{{questions}}</h3>
+        <p>{{tag}}</p>
+        <button class="delete-btn" data-id="{{questions_id}}">delete</button>
+      </div>
+    </div>
+    <hr>
+  </script>
+
+  <!-- Handlebars template for error view -->
+  <script type="text/x-handlebars-template" id="error-template">
+    <div class="error-container">
+      <h3>Error</h3>
+        <p>{{status}}: {{statusText}}</p>
+    </div>
+  </script>
+
+  <!-- Handlebars template for update view -->
+  <script type="text/x-handlebars-template" id="update-template">
+    <form id="updateTag-form" data-userId={{user_id}}>
+      <h3>Customize Your Responses!</h3>
+      <p>Examples: "sure", "never", "absolutely", "outlook unclear"</p>
+      <input type="text" name="one" value="{{tagArray.[0]}}" required>
+      <input type="text" name="two" value="{{tagArray.[1]}}" required>
+      <input type="text" name="three" value="{{tagArray.[2]}}" required>
+      <input type="text" name="four" value="{{tagArray.[3]}}" required>
+      <input type="text" name="five" value="{{tagArray.[4]}}" required>
+      <input type="text" name="six" value="{{tagArray.[5]}}" required>
+      <input type="text" name="seven" value="{{tagArray.[6]}}" required>
+      <input type="text" name="eight" value="{{tagArray.[7]}}" required> 
+      <button type="submit">Update Responses</button>
+    </form>
+    <button type="button" id="reset-button">Reset to Default</button>
+  </script>
+</head>
+
+<body>
+  
+  <div class="wrapper">
+  <header>
+    <a href="/"><h1>Magic Gif Ball</h1></a>    
+      <h2>Welcome<span class="loginName"></span>!</h2>
+      <img id="hamburger-icon" src="./styles/img_assets/white_Menu-icon.png" width="30" alt="hamburger menu icon" href="update">
+      <p class="loggedOut">Note: Log in for more features</p>
+
+      <nav id="menu">
+        <ul>
+          <li><a id="home-menu-link" href="/">Home</a></li>
+          <li class="loggedIn"><a id="history-menu-link" href="/history">History</a></li>
+          <li class="loggedIn"><a id="update-menu-link" href="/update">Customize Responses</a></li>
+          <li><a id="about-menu-link" href="/about">About the Creators</a></li>
+          <li><a id="login-menu-link" href="/login">Login</a></li>
+          <li class="loggedIn"><a id="logout-menu-link" href="/logout">Log Out</a></li>
+        </ul>
+      </nav>
+  </header>
+
+    <main>
+      <section class="error-View container"></section>
+      
+      <section class="about-Us container">
+      <h2>About the Creators</h2>
+        
+        <div class="about-Us-profile">
+          <h3>Patricia</h3>
+          <img src="about-pics/Patricia.GIF">
+          <p>Patricia likes snacking and coding and weird Canadian snack foods that her sister brings back from Vancouver. She has really been enjoying software development because it lets her snack and code at the same time.</p>
+          <a href="https://www.linkedin.com/in/patricia-raftery/" target="_blank"><img class="link-icon" src="/styles/img_assets/linkedin.svg"></a>
+          <a href="https://github.com/Patricia888" target="_blank"><img class="link-icon" src="/styles/img_assets/github.svg"></a>
+        </div>
+
+        <div class="about-Us-profile">
+          <h3>Beverly</h3>
+          <img src="about-pics/beverly.GIF">
+          <p>Beverly is a Code Fellows student in Seattle learning to become a web developer. When she's not coding or walking her dog, you can find her wasting countless hours looking at random GIFs.</p>
+          <a href="https://www.linkedin.com/in/beverly-pham/" target="_blank"><img class="link-icon" src="/styles/img_assets/linkedin.svg"></a>
+          <a href="https://github.com/zarkle" target="_blank"><img class="link-icon" src="/styles/img_assets/github.svg"></a>
+        </div>
+        
+        <div class="about-Us-profile">
+          <h3>Tyler</h3>
+          <img src="about-pics/Tyler.GIF">
+          <p>Tyler is an engineer who started out in physical product design. He is convinced that what we think of as magic is possible through technology. He’s usually not this sad, but Magic Gif Ball just gave him some bad news...</p>
+          <a href="https://www.linkedin.com/in/tylerfishbone/" target="_blank"><img class="link-icon" src="/styles/img_assets/linkedin.svg"></a>
+          <a href="https://github.com/tyler-fishbone" target="_blank"><img class="link-icon" src="/styles/img_assets/github.svg"></a>
+        </div>
+        
+        <div class="about-Us-profile">
+          <h3>Haron</h3>
+          <img src="about-pics/Haron.GIF">
+          <p>Haron enjoys solving real world problems using Javascript. He spends his free time watching sports and sorting sports data from various APIs. His code is on fire. No seriously look!</p>
+          <a href="https://www.linkedin.com/in/haron-yunis-b1332a114/" target="_blank"><img class="link-icon" src="/styles/img_assets/linkedin.svg"></a>
+          <a href="https://github.com/haronYunis" target="_blank"><img class="link-icon" src="/styles/img_assets/github.svg"></a>
+        </div>
+        <div class="clear-fix"></div>
+    </section>
+    
+    <section class="game-View container">
+      <div id="game-View-form-container">
+        <form action="" id="question-form">
+            <img id="gif-ball-image" src="./styles/img_assets/gif-ball-2.png" alt="">
+          <input type="text" name="questionToGifBall" placeholder="Enter a Y/N Question">
+          <img id="retrieved-gif" src="https://vectr.com/tylerfishbone/b17UlaIL1J.svg?width=355&height=200&select=b17UlaIL1Jpage0" alt="">
+          <p></p>
+          <button id="ask-button" type="submit">Ask!</button>
+        </form>
+      </div>
+      </section>
+      
+      <section class="history-View container">
+        <!-- change to class, or different id? -->
+        <h2><span class="loginName"></span>'s Gifstory</h2>
+        <div class="history"></div>
+        <div></div>
+      </section>
+      
+      <section class="login-View container">
+        <form action="" id="login-form">
+          <label>Enter a Username:</label>
+              <input type="text" name="userName" placeholder="Username">
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+
+      <section class="update-View container"></section>
+      </main>
+
+    <div class="push"></div>
+  </div> 
+
+  <footer class="footer">
+    <p>&copy; 2018 Magic Gif Ball - powered by <a href="https://developers.giphy.com" target="_blank">Giphy</a></p>
+  </footer>
+      
+  <!-- jQuery, Handlebars, and page.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+  <script src="https://cdn.rawgit.com/visionmedia/page.js/master/page.js"></script>
+  <!-- link js files -->
+  <script src="scripts/model/game.js"></script>
+  <script src="scripts/view/aboutView.js"></script>
+  <script src="scripts/view/gameView.js"></script>
+  <script src="scripts/view/historyView.js"></script>
+  <script src="scripts/view/updateView.js"></script>
+  <script src="scripts/view/loginView.js"></script>
+  <script src="scripts/controller/routes.js"></script>
+</body>
+</html>
